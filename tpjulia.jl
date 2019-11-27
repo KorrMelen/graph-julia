@@ -13,7 +13,7 @@ mutable struct tabgraph
             Array{Int}(undef,nbs,nbs))
 end
 
-function relie!(G::tabgraph,s::Int32,d::Int32,p::Float64)
+function relie!(G::tabgraph,s::Int32,d::Int32,p::Int32)
     if s <= G.nv && d <= G.nv
         G.adj[s,d] = true
         G.pds[s,d] = p
@@ -45,7 +45,7 @@ end
 
 function lire!(G::tabgraph,nomf)
     f = open(nomf)
-    for (i, line) in enumerate(eachline(f))
+    for line in eachline(f)
         line = split(line,",")
         relie!(G,parse(Int,line[1]),parse(Int,line[2]),parse(Int,line[3]))
     end
@@ -60,10 +60,10 @@ function connexitéforte(G::tabgraph)
         voisin = voisins(F,i)
         pred = preds(F,i)
         for j in pred
-             for k in voisin
-                  relie!(F,j,k,1)
-              end
-          end
-      end
-      return F
+            for k in voisin
+                relie!(F,j,k,-1)
+            end
+        end
+    end
+    return F
 end
