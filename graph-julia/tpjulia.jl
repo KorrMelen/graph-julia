@@ -22,6 +22,7 @@ function relie!(G::tabgraph,s::Int,d::Int,p::Int)
 end
 
 function aff(G::tabgraph)
+    G.adj
     G.pds
 end
 
@@ -61,7 +62,8 @@ function connexitéforte(G::tabgraph)
         pred = preds(F,i)
         for j in pred
             for k in voisin
-                relie!(F,j,k,-1)
+                F.adj[j,k] = true
+                #relie!(F,j,k,-1)
             end
         end
     end
@@ -79,3 +81,48 @@ function connexitéforte2(G::tabgraph)
     end
     return F
 end
+
+function comparTime(taille,proba)
+        g = tabgraph(taille)
+        alea!(g,proba)
+        println(mesure(connexitéforte,g))
+        println(mesure(connexitéforte2,g))
+end
+
+function mesure(connexite,G::tabgraph)
+    connexite(G)
+    t=time()
+    for i in 1:1000
+        connexite(G)
+    end
+    return (time()-t)/1000
+end
+
+function courtchemin(G::tabgraph)
+    F = tabgraph(G.nv)
+    F.adj = copy(G.adj)
+    F.pds = copy(G.pds)
+    for i in 1:F.nv
+        voisin = voisins(F,i)
+        pred = preds(F,i)
+        for j in pred
+            for k in voisin
+                if F.adj[j,k]
+                    F.pds[j,k] = min(F.pds[j,k],F.pds[j,i]+F.pds[i,k])
+                else
+                    relie!(F,j,k,F.pds[j,i]+F.pds[i,k])
+                end
+            end
+        end
+    end
+    return F
+end
+
+
+
+
+g = tabgraph(5)
+f = tabgraph(5)
+
+lire!(g,"test")
+lire!(f,"test2")
