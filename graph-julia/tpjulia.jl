@@ -14,7 +14,7 @@ mutable struct tabgraph
 end
 
 function relie!(G::tabgraph,s::Int,d::Int,p::Int)
-    if s <= G.nv && d <= G.nv
+    if s <= G.nv && d <= G.nv && s!=d
         G.adj[s,d] = true
         G.pds[s,d] = p
         G.ne+=1
@@ -22,7 +22,6 @@ function relie!(G::tabgraph,s::Int,d::Int,p::Int)
 end
 
 function aff(G::tabgraph)
-    G.adj
     G.pds
 end
 
@@ -70,6 +69,7 @@ function connexitéforte(G::tabgraph)
     return F
 end
 
+
 function connexitéforte2(G::tabgraph)
     F = tabgraph(G.nv)
     F.adj = copy(G.adj)
@@ -83,10 +83,10 @@ function connexitéforte2(G::tabgraph)
 end
 
 function comparTime(taille,proba)
-        g = tabgraph(taille)
-        alea!(g,proba)
-        println(mesure(connexitéforte,g))
-        println(mesure(connexitéforte2,g))
+        G = tabgraph(taille)
+        alea!(G,proba)
+        println(mesure(connexitéforte,G))
+        println(mesure(connexitéforte2,G))
 end
 
 function mesure(connexite,G::tabgraph)
